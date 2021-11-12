@@ -77,17 +77,17 @@ class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
 
                     break;
                 case "setBool":
-                    //if(checkInit(result))
+                    if(checkInit(result))
                         commitAsync(preferences.edit().putBoolean(key, (boolean) call.argument("value")), result);
                     break;
                 case "setDouble":
-                    //if(checkInit(result))
+                    if(checkInit(result))
                     double doubleValue = ((Number) call.argument("value")).doubleValue();
                     String doubleValueStr = Double.toString(doubleValue);
                     commitAsync(preferences.edit().putString(key, DOUBLE_PREFIX + doubleValueStr), result);
                     break;
                 case "setInt":
-                    //if(checkInit(result))
+                    if(checkInit(result))
                     Number number = call.argument("value");
                     if (number instanceof BigInteger) {
                         BigInteger integerValue = (BigInteger) number;
@@ -102,7 +102,7 @@ class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
                     }
                     break;
                 case "setString":
-                    //if(checkInit(result))
+                    if(checkInit(result))
                     String value = (String) call.argument("value");
                     if (value.startsWith(LIST_IDENTIFIER)
                             || value.startsWith(BIG_INTEGER_PREFIX)
@@ -116,26 +116,26 @@ class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
                     commitAsync(preferences.edit().putString(key, value), result);
                     break;
                 case "setStringList":
-                    //if(checkInit(result))
+                    if(checkInit(result))
                     List<String> list = call.argument("value");
                     commitAsync(
                             preferences.edit().putString(key, LIST_IDENTIFIER + encodeList(list)), result);
                     break;
                 case "commit":
-                    //if(checkInit(result))
+                    if(checkInit(result))
                     // We've been committing the whole time.
                     result.success(true);
                     break;
                 case "getAll":
-                    //if(checkInit(result))
+                    if(checkInit(result))
                     result.success(getAllPrefs());
                     return;
                 case "remove":
-                    //if(checkInit(result))
+                    if(checkInit(result))
                     commitAsync(preferences.edit().remove(key), result);
                     break;
                 case "clear":
-                    //if(checkInit(result))
+                    if(checkInit(result))
                     Set<String> keySet = getAllPrefs().keySet();
                     SharedPreferences.Editor clearEditor = preferences.edit();
                     for (String keyToDelete : keySet) {
@@ -154,7 +154,7 @@ class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
 
     boolean checkInit(MethodChannel.Result result){
         if(!isPreferenceInit){
-            //result.error("You need to call appGroup first");
+            //result.error("You need to call appGroup first", null);
             return  false;
         }
         return  true;
