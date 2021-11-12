@@ -67,7 +67,9 @@ class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
             switch (call.method) {
                 case "setAppGroup":
                     try {
-                        preferences = context.createPackageContext(call.argument("appGroup")+"",  Context.CONTEXT_IGNORE_SECURITY).getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+                        Context friendContext = context.createPackageContext(call.argument("appGroup")+"",  Context.CONTEXT_IGNORE_SECURITY);
+                        //preferences = context.createPackageContext(call.argument("appGroup")+"",  Context.CONTEXT_IGNORE_SECURITY).getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+                        preferences = friendContext.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
                         isPreferenceInit = true;
                     } catch (PackageManager.NameNotFoundException e) {
                         e.printStackTrace();
