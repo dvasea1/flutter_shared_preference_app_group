@@ -9,8 +9,10 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Base64;
+
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,8 +28,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
 import static java.lang.System.out;
+
 import android.content.pm.PackageManager;
+
 /**
  * Implementation of the {@link MethodChannel.MethodCallHandler} for the plugin. It is also
  * responsible of managing the {@link android.content.SharedPreferences}.
@@ -42,7 +47,7 @@ class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
     private static final String BIG_INTEGER_PREFIX = "VGhpcyBpcyB0aGUgcHJlZml4IGZvciBCaWdJbnRlZ2Vy";
     private static final String DOUBLE_PREFIX = "VGhpcyBpcyB0aGUgcHJlZml4IGZvciBEb3VibGUu";
 
-    private  android.content.SharedPreferences preferences;
+    private android.content.SharedPreferences preferences;
 
     private final ExecutorService executor;
     private final Handler handler;
@@ -67,7 +72,7 @@ class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
             switch (call.method) {
                 case "setAppGroup":
                     try {
-                        Context friendContext = context.createPackageContext(call.argument("appGroup")+"",  Context.CONTEXT_IGNORE_SECURITY);
+                        Context friendContext = context.createPackageContext(call.argument("appGroup") + "", Context.CONTEXT_IGNORE_SECURITY);
                         //preferences = context.createPackageContext(call.argument("appGroup")+"",  Context.CONTEXT_IGNORE_SECURITY).getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
                         preferences = friendContext.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
                         isPreferenceInit = true;
@@ -77,71 +82,85 @@ class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
 
                     break;
                 case "setBool":
-                    if(checkInit(result))
+                    if (checkInit(result))
                         commitAsync(preferences.edit().putBoolean(key, (boolean) call.argument("value")), result);
                     break;
                 case "setDouble":
-                    if(checkInit(result))
-                    double doubleValue = ((Number) call.argument("value")).doubleValue();
+                    if (checkInit(result))
+                        double doubleValue = ((Number) call.argument("value")).doubleValue();
                     String doubleValueStr = Double.toString(doubleValue);
                     commitAsync(preferences.edit().putString(key, DOUBLE_PREFIX + doubleValueStr), result);
                     break;
                 case "setInt":
-                    if(checkInit(result))
-                    Number number = call.argument("value");
-                    if (number instanceof BigInteger) {
-                        BigInteger integerValue = (BigInteger) number;
-                        commitAsync(
-                                preferences
-                                        .edit()
-                                        .putString(
-                                                key, BIG_INTEGER_PREFIX + integerValue.toString(Character.MAX_RADIX)),
-                                result);
-                    } else {
-                        commitAsync(preferences.edit().putLong(key, number.longValue()), result);
+                    if (checkInit(result)) {
+                        Number number = call.argument("value");
+                        if (number instanceof BigInteger) {
+                            BigInteger integerValue = (BigInteger) number;
+                            commitAsync(
+                                    preferences
+                                            .edit()
+                                            .putString(
+                                                    key, BIG_INTEGER_PREFIX + integerValue.toString(Character.MAX_RADIX)),
+                                    result);
+                        } else {
+                            commitAsync(preferences.edit().putLong(key, number.longValue()), result);
+                        }
                     }
+
                     break;
                 case "setString":
-                    if(checkInit(result))
-                    String value = (String) call.argument("value");
-                    if (value.startsWith(LIST_IDENTIFIER)
-                            || value.startsWith(BIG_INTEGER_PREFIX)
-                            || value.startsWith(DOUBLE_PREFIX)) {
-                        result.error(
-                                "StorageError",
-                                "This string cannot be stored as it clashes with special identifier prefixes.",
-                                null);
-                        return;
+                    if (checkInit(result)) {
+                        String value = (String) call.argument("value");
+                        if (value.startsWith(LIST_IDENTIFIER)
+                                || value.startsWith(BIG_INTEGER_PREFIX)
+                                || value.startsWith(DOUBLE_PREFIX)) {
+                            result.error(
+                                    "StorageError",
+                                    "This string cannot be stored as it clashes with special identifier prefixes.",
+                                    null);
+                            return;
+                        }
+                        commitAsync(preferences.edit().putString(key, value), result);
                     }
-                    commitAsync(preferences.edit().putString(key, value), result);
+
                     break;
                 case "setStringList":
-                    if(checkInit(result))
-                    List<String> list = call.argument("value");
-                    commitAsync(
-                            preferences.edit().putString(key, LIST_IDENTIFIER + encodeList(list)), result);
+                    if (checkInit(result)) {
+                        List<String> list = call.argument("value");
+                        commitAsync(
+                                preferences.edit().putString(key, LIST_IDENTIFIER + encodeList(list)), result);
+                    }
+
                     break;
                 case "commit":
-                    if(checkInit(result))
-                    // We've been committing the whole time.
-                    result.success(true);
+                    if (checkInit(result)) {
+                        // We've been committing the whole time.
+                        result.success(true);
+                    }
+
                     break;
                 case "getAll":
-                    if(checkInit(result))
-                    result.success(getAllPrefs());
+                    if (checkInit(result)) {
+                        result.success(getAllPrefs());
+                    }
+
                     return;
                 case "remove":
-                    if(checkInit(result))
-                    commitAsync(preferences.edit().remove(key), result);
+                    if (checkInit(result)) {
+                        commitAsync(preferences.edit().remove(key), result);
+                    }
+
                     break;
                 case "clear":
-                    if(checkInit(result))
-                    Set<String> keySet = getAllPrefs().keySet();
-                    SharedPreferences.Editor clearEditor = preferences.edit();
-                    for (String keyToDelete : keySet) {
-                        clearEditor.remove(keyToDelete);
+                    if (checkInit(result)) {
+                        Set<String> keySet = getAllPrefs().keySet();
+                        SharedPreferences.Editor clearEditor = preferences.edit();
+                        for (String keyToDelete : keySet) {
+                            clearEditor.remove(keyToDelete);
+                        }
+                        commitAsync(clearEditor, result);
                     }
-                    commitAsync(clearEditor, result);
+
                     break;
                 default:
                     result.notImplemented();
@@ -152,12 +171,12 @@ class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
         }
     }
 
-    boolean checkInit(MethodChannel.Result result){
-        if(!isPreferenceInit){
+    boolean checkInit(MethodChannel.Result result) {
+        if (!isPreferenceInit) {
             //result.error("You need to call appGroup first", null);
-            return  false;
+            return false;
         }
-        return  true;
+        return true;
     }
 
     public void teardown() {
