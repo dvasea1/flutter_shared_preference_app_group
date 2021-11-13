@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 
 class SharedPreferenceAppGroup {
-  static const MethodChannel _channel = const MethodChannel('FlutterSharedPreferences');
+  static const MethodChannel _channel = const MethodChannel('shared_preference_app_group');
 
   /// Set app group ID for iOS
   ///
@@ -45,7 +45,7 @@ class SharedPreferenceAppGroup {
   /// Reads a value of any type from persistent storage under the specified app group.
   ///
   /// If the persistent storage does not contains [key], then [null] will be returned
-  static Future<dynamic?> get(String key) async {
+  static Future<dynamic> get(String key) async {
     return await _channel.invokeMethod('get', {'key': key});
   }
 

@@ -11,15 +11,15 @@ import android.content.Context;
 import io.flutter.plugin.common.BinaryMessenger;
 
 /** SharedPreferenceAppGroupPlugin */
-public class SharedPreferenceAppGroupPlugin implements FlutterPlugin {
-  private static final String CHANNEL_NAME = "FlutterSharedPreferences";
+public class ASharedPreferenceAppGroupPlugin implements FlutterPlugin {
+  private static final String CHANNEL_NAME = "shared_preference_app_group";
 
   private MethodChannel channel;
   private MethodCallHandlerImpl handler;
 
   @SuppressWarnings("deprecation")
   public static void registerWith(io.flutter.plugin.common.PluginRegistry.Registrar registrar) {
-    final SharedPreferenceAppGroupPlugin plugin = new SharedPreferenceAppGroupPlugin();
+    final ASharedPreferenceAppGroupPlugin plugin = new ASharedPreferenceAppGroupPlugin();
     plugin.setupChannel(registrar.messenger(), registrar.context());
   }
 

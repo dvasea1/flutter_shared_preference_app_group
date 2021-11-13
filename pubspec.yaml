@@ -25,8 +25,9 @@ flutter:
   # adding or updating assets for this project.
   plugin:
     platforms:
-      ios:
-        pluginClass: SharedPreferenceAppGroupPlugin
       android:
         package: im.zego.shared_preference_app_group
+        pluginClass: ASharedPreferenceAppGroupPlugin
+      ios:
         pluginClass: SharedPreferenceAppGroupPlugin
+
