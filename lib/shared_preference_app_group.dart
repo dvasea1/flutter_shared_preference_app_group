@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/services.dart';
 
@@ -9,9 +8,9 @@ class SharedPreferenceAppGroup {
   /// Set app group ID for iOS
   ///
   /// Developers must invoke this function to set the [appGroup] before invoking other functions.
-  static Future<void> setAppGroup({required String appGroupIOS , required String appGroupAndroid}) async {
+  static Future<void> setAppGroup({required String appGroup}) async {
 
-    await _channel.invokeMethod('setAppGroup', {'appGroup':  Platform.isIOS? appGroupIOS : appGroupAndroid});
+    await _channel.invokeMethod('setAppGroup', {'appGroup':  appGroup});
   }
 
   /// Saves a boolean [value] to persistent storage under the specified app group.
