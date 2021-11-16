@@ -86,10 +86,15 @@ class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
                         commitAsync(preferences.edit().putBoolean(key, (boolean) call.argument("value")), result);
                     break;
                 case "setDouble":
-                    if (checkInit(result))
-                        double doubleValue = ((Number) call.argument("value")).doubleValue();
-                    String doubleValueStr = Double.toString(doubleValue);
-                    commitAsync(preferences.edit().putString(key, DOUBLE_PREFIX + doubleValueStr), result);
+                    if (checkInit(result)) {
+                      try{
+                          double doubleValues = ((Number) call.argument("value")).doubleValue();
+                          String doubleValueStr = Double.toString(doubleValues);
+                          commitAsync(preferences.edit().putString(key, DOUBLE_PREFIX + doubleValueStr), result);
+                      }catch (Exception e){
+                          System.out.println("E "+e);
+                      }
+                    }
                     break;
                 case "setInt":
                     if (checkInit(result)) {
