@@ -78,6 +78,7 @@ class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
                         isPreferenceInit = true;
                     } catch (PackageManager.NameNotFoundException e) {
                         e.printStackTrace();
+                        result.error("NameNotFoundException", call.method, e);
                     }
 
                     break;
